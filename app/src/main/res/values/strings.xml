@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="app_name">Popular Movie</string>
+    <string name="action_sort_popular">Most popular</string>
+    <string name="action_sort_rating">Top rated</string>
+    <string name="error_unknown">Oh no, I wasn\'t expecting this! :(</string>
+    <string name="empty_movies_message">Oops, seems that there\'s no movies available at this point, come check later!</string>
+    <string name="error_cannot_load_movies">Cannot load the movies, please check the connection!</string>
+    <string name="error_cannot_load_details">Cannot load all the details about the movie, please check the connection!</string>
+    <string name="original_title_header">Original title</string>
+    <string name="original_language_header">Original header</string>
+    <string name="release_date_header">Release date</string>
+    <string name="runtime_header">Runtime</string>
+    <string name="runtime">%dmin</string>
+    <string name="release_date">2015</string>
+    <string name="rating_header">Rating</string>
+    <string name="rating">%s/10</string>
+    <string name="genres_header">Genres</string>
+    <string name="genres_mask">, %s</string>
+    <string name="synopsis_header">Synopsis</string>
+
+</resources>

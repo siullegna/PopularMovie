@@ -53,3 +53,6 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+# for this project, we should not include the api_key for movies, since is sensitive information.
+app/src/main/res/values/api_key.xml
