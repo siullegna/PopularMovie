@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="movie_detail_thumbnail_height">250dp</dimen>
+    <dimen name="movie_detail_item_padding">8dp</dimen>
+    <dimen name="movie_detail_ic_favorite_size">24dp</dimen>
+    <dimen name="movie_detail_thumbnail_size">70dp</dimen>
+    <dimen name="movie_detail_expanded_title_margin_end">64dp</dimen>
+    <dimen name="movie_detail_expanded_title_margin_start">48dp</dimen>
+    <dimen name="movie_detail_fab_margin">16dp</dimen>
+    <dimen name="movie_detail_nested_scroll_padding_top">40dp</dimen>
+    <dimen name="movie_detail_nested_scroll_padding_bottom">16dp</dimen>
+    <dimen name="movie_detail_nested_scroll_padding">8dp</dimen>
+
+    <dimen name="detail_view_margin">8dp</dimen>
+    <dimen name="detail_view_separator_height">1dp</dimen>
+
+    <dimen name="empty_screen_padding">16dp</dimen>
+    <dimen name="more_detail_margin_top">8dp</dimen>
+
+</resources>

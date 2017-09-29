@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <style name="MovieDetailTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="DetailHeaderTextStyle">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="EmptyScreenTextStyle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+    
+</resources>
