@@ -1,11 +1,9 @@
 package com.hap.popularmovie.network;
 
-import android.content.Context;
-
-import com.hap.popularmovie.R;
 import com.hap.popularmovie.dagger.scope.ApplicationScope;
 import com.hap.popularmovie.model.MovieItem;
 import com.hap.popularmovie.model.MovieResponse;
+import com.hap.popularmovie.util.MovieSettings;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -19,8 +17,8 @@ public class MovieRestService {
     private final String apiKey;
     private final MovieRestApi movieRestApi;
 
-    public MovieRestService(final Context context, final MovieRestApi movieRestApi) {
-        this.apiKey = context.getString(R.string.api_key);
+    public MovieRestService(final MovieRestApi movieRestApi) {
+        this.apiKey = MovieSettings.API_KEY;
         this.movieRestApi = movieRestApi;
     }
 

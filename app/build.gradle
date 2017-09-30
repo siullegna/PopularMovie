@@ -10,6 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", API_KEY)
     }
     buildTypes {
         release {
@@ -36,30 +38,30 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
-    compile "com.android.support:cardview-v7:$supportLibVersion"
-    compile "com.android.support:design:26.0.0-alpha1"
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibVersion"
+    compile "com.android.support:cardview-v7:$rootProject.supportLibVersion"
+    compile "com.android.support:design:$rootProject.supportLibVersion"
 
     // Picasso
-    compile "com.squareup.picasso:picasso:$picassoLibVersion"
+    compile "com.squareup.picasso:picasso:$rootProject.picassoLibVersion"
 
     // RxJava2
-    compile "io.reactivex.rxjava2:rxjava:$rxJava2LibVersion"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroid2LibVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.rxJava2LibVersion"
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroid2LibVersion"
 
     // Retrofit2
-    compile "com.squareup.retrofit2:retrofit:$retrofit2LibVersion"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit2LibVersion"
-    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit2LibVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2LibVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofit2LibVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit2LibVersion"
 
     // okhttp3
-    compile "com.squareup.okhttp3:okhttp:$okHttp3LibVersion"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
+    compile "com.squareup.okhttp3:okhttp:$rootProject.okHttp3LibVersion"
 
     // Dagger
-    compile "com.google.dagger:dagger:$dagger2LibVersion"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger2LibVersion"
-//    provided 'javax.annotation:jsr250-api:1.0'
+    compile "com.google.dagger:dagger:$rootProject.dagger2LibVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2LibVersion"
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
 }

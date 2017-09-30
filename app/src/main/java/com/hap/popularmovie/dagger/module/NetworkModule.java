@@ -1,6 +1,5 @@
 package com.hap.popularmovie.dagger.module;
 
-import com.hap.popularmovie.MovieApplication;
 import com.hap.popularmovie.dagger.scope.ApplicationScope;
 import com.hap.popularmovie.network.MovieRestApi;
 import com.hap.popularmovie.network.MovieRestService;
@@ -40,6 +39,6 @@ public class NetworkModule {
     @ApplicationScope
     protected MovieRestService provideMovieRestSevice(final OkHttpClient okHttpClient) {
         final MovieRestApi movieRestApi = getObservableAdapter(okHttpClient, MovieRestApi.class);
-        return new MovieRestService(MovieApplication.getInstance(), movieRestApi);
+        return new MovieRestService(movieRestApi);
     }
 }
