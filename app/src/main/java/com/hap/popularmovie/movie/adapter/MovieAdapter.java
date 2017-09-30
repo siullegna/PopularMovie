@@ -18,9 +18,11 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieItemHolder> {
     private final ArrayList<MovieItem> movies = new ArrayList<>();
     private final int itemSize;
+    private final MovieItemHolder.OnViewClickListener onViewClickListener;
 
-    public MovieAdapter(int itemSize) {
+    public MovieAdapter(final int itemSize, final MovieItemHolder.OnViewClickListener onViewClickListener) {
         this.itemSize = itemSize;
+        this.onViewClickListener = onViewClickListener;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieItemHolder> {
 
     @Override
     public void onBindViewHolder(MovieItemHolder holder, int position) {
-        holder.bindView(itemSize, movies.get(position));
+        holder.bindView(itemSize, movies.get(position), onViewClickListener);
     }
 
     @Override
