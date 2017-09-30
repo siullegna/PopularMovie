@@ -1,6 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.supportLibVersion       = '26.0.1'
+    ext.picassoLibVersion       = '2.5.2'
+    ext.rxJava2LibVersion       = '2.1.1'
+    ext.rxAndroid2LibVersion    = '2.0.1'
+    ext.okHttp3LibVersion       = '3.9.0'
+    ext.retrofit2LibVersion     = '2.2.0'
+    ext.realmLibVersion         = '2.1.1'
+    ext.dagger2LibVersion = '2.9'
+
     repositories {
         jcenter()
     }

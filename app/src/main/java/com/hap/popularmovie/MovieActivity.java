@@ -1,5 +1,6 @@
 package com.hap.popularmovie;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.hap.popularmovie.model.MovieItem;
 import com.hap.popularmovie.model.MovieResponse;
 import com.hap.popularmovie.movie.adapter.MovieAdapter;
+import com.hap.popularmovie.movie.holder.MovieItemHolder;
 import com.hap.popularmovie.network.MovieRestService;
 import com.hap.popularmovie.util.ImageSettings;
 import com.hap.popularmovie.widget.EmptyScreenView;
@@ -29,7 +31,7 @@ import javax.inject.Inject;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
-public class MovieActivity extends AppCompatActivity {
+public class MovieActivity extends AppCompatActivity implements MovieItemHolder.OnViewClickListener {
     private static final String EXTRA_MOVIES_KEY = "com.hap.popularmovie.EXTRA_MOVIES_KEY";
     private static final String EXTRA_SORT_TYPE_KEY = "com.hap.popularmovie.EXTRA_SORT_TYPE_KEY";
     private MovieRestService.SortType currentSortType = null;
@@ -69,7 +71,7 @@ public class MovieActivity extends AppCompatActivity {
         rvMovies.setLayoutManager(layoutManager);
 
         final int itemSize = ImageSettings.getItemSize(this, cols);
-        movieAdapter = new MovieAdapter(itemSize);
+        movieAdapter = new MovieAdapter(itemSize, this);
         rvMovies.setAdapter(movieAdapter);
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -142,6 +144,15 @@ public class MovieActivity extends AppCompatActivity {
         outState.putParcelableArrayList(MovieActivity.EXTRA_MOVIES_KEY, movies);
         outState.putString(MovieActivity.EXTRA_SORT_TYPE_KEY, currentSortType.name());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(MovieItem movieItem) {
+        final Intent detailsIntent = new Intent(this, MovieDetailActivity.class);
+        final Bundle args = new Bundle();
+        args.putParcelable(MovieDetailActivity.EXTRA_MOVIE_ITEM, movieItem);
+        detailsIntent.putExtras(args);
+        startActivity(detailsIntent);
     }
 
     private void showLoader() {

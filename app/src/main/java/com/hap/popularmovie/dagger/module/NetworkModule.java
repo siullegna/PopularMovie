@@ -40,6 +40,6 @@ public class NetworkModule {
     @ApplicationScope
     protected MovieRestService provideMovieRestSevice(final OkHttpClient okHttpClient) {
         final MovieRestApi movieRestApi = getObservableAdapter(okHttpClient, MovieRestApi.class);
-        return new MovieRestService(MovieApplication.getInstance(), movieRestApi);
+        return new MovieRestService(movieRestApi);
     }
 }
