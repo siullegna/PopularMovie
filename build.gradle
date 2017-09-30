@@ -8,7 +8,7 @@ buildscript {
     ext.okHttp3LibVersion       = '3.9.0'
     ext.retrofit2LibVersion     = '2.2.0'
     ext.realmLibVersion         = '2.1.1'
-    ext.dagger2LibVersion = '2.9'
+    ext.dagger2LibVersion       = '2.9'
 
     repositories {
         jcenter()

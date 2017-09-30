@@ -1,6 +1,5 @@
 package com.hap.popularmovie.dagger.module;
 
-import com.hap.popularmovie.MovieApplication;
 import com.hap.popularmovie.dagger.scope.ApplicationScope;
 import com.hap.popularmovie.network.MovieRestApi;
 import com.hap.popularmovie.network.MovieRestService;
