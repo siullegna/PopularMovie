@@ -57,13 +57,4 @@ freeline_project_description.json
 # for this project, we should not include the api_key for movies, since is sensitive information.
 app/src/main/res/values/api_key.xml
 
-*.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-
 /gradle.properties
