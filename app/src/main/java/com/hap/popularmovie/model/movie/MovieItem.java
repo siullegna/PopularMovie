@@ -1,9 +1,10 @@
-package com.hap.popularmovie.model;
+package com.hap.popularmovie.model.movie;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.hap.popularmovie.model.Genre;
 
 import java.util.ArrayList;
 

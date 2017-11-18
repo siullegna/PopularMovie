@@ -1,4 +1,4 @@
-package com.hap.popularmovie.model;
+package com.hap.popularmovie.model.movie;
 
 import com.google.gson.annotations.SerializedName;
 

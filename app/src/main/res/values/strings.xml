@@ -3,6 +3,7 @@
     <string name="app_name">Popular Movie</string>
     <string name="action_sort_popular">Most popular</string>
     <string name="action_sort_rating">Top rated</string>
+    <string name="action_show_favorites">Favorites</string>
     <string name="error_unknown">Oh no, I wasn\'t expecting this! :(</string>
     <string name="empty_movies_message">Oops, seems that there\'s no movies available at this point, come check later!</string>
     <string name="error_cannot_load_movies">Cannot load the movies, please check the connection!</string>
@@ -18,5 +19,10 @@
     <string name="genres_header">Genres</string>
     <string name="genres_mask">, %s</string>
     <string name="synopsis_header">Synopsis</string>
+
+    <string name="open_with">Open with</string>
+    <string name="trailers">Trailers</string>
+    <string name="trailer_name_tag">Trailer Name</string>
+    <string name="trailer_loading_error">Cannot load trailers, please check the connection!</string>
 
 </resources>

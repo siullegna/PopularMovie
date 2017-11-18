@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.hap.popularmovie.model.MovieItem;
-import com.hap.popularmovie.model.MovieResponse;
+import com.hap.popularmovie.model.movie.MovieItem;
+import com.hap.popularmovie.model.movie.MovieResponse;
 import com.hap.popularmovie.movie.adapter.MovieAdapter;
 import com.hap.popularmovie.movie.holder.MovieItemHolder;
 import com.hap.popularmovie.network.MovieRestService;
@@ -90,7 +90,9 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
             currentSortType = MovieRestService.SortType.POPULAR;
             loadMovies(currentSortType);
         } else {
-            movieAdapter.addAll(movies);
+            if (movieAdapter.isEmpty()) {
+                movieAdapter.addAll(movies);
+            }
             hideLoader();
             if (movieAdapter.getItemCount() > 0) {
                 emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.GONE);
@@ -99,6 +101,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                 emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.EMPTY_MOVIES);
             }
         }
+        setupToolbar(currentSortType);
     }
 
     @Override
@@ -133,6 +136,9 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                 movieAdapter.clear();
                 currentSortType = MovieRestService.SortType.RATING;
                 loadMovies(currentSortType);
+                return true;
+            case R.id.action_show_favorites:
+
                 return true;
         }
 
@@ -172,17 +178,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
     }
 
     private void loadMovies(final MovieRestService.SortType sortType) {
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            switch (sortType) {
-                case POPULAR:
-                    actionBar.setTitle(R.string.action_sort_popular);
-                    break;
-                case RATING:
-                    actionBar.setTitle(R.string.action_sort_rating);
-                    break;
-            }
-        }
+        setupToolbar(sortType);
 
         movieRestService.getMovies(sortType)
                 .subscribe(new Consumer<MovieResponse>() {
@@ -193,7 +189,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                         }
 
                         movies = movieResponse.getMovies();
-                        movieAdapter.addAll(movieResponse.getMovies());
+                        movieAdapter.addAll(movieResponse.getMovies(), true);
                         hideLoader();
                         if (movieAdapter.getItemCount() > 0) {
                             emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.GONE);
@@ -217,5 +213,19 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                         }
                     }
                 });
+    }
+
+    private void setupToolbar(final MovieRestService.SortType sortType) {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            switch (sortType) {
+                case POPULAR:
+                    actionBar.setTitle(R.string.action_sort_popular);
+                    break;
+                case RATING:
+                    actionBar.setTitle(R.string.action_sort_rating);
+                    break;
+            }
+        }
     }
 }

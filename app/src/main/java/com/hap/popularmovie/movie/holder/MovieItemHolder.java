@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hap.popularmovie.R;
-import com.hap.popularmovie.model.MovieItem;
+import com.hap.popularmovie.model.movie.MovieItem;
 import com.hap.popularmovie.util.ImageSettings;
 import com.squareup.picasso.Picasso;
 
