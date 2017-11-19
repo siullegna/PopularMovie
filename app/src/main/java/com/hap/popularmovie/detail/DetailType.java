@@ -9,6 +9,7 @@ public enum DetailType {
     TRAILER,
     SEPARATOR,
     HEADER,
+    REVIEW,
     UNKNOWN;
 
     public static DetailType fromOrdinal(final int ordinal) {

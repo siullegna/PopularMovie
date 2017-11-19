@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
-public class MovieDetailActivity extends BaseMovieActivity implements MovieDetailAdapter.OnTrailerClickListener {
+public class MovieDetailActivity extends BaseMovieActivity implements MovieDetailAdapter.OnItemClickListener {
     private static final String TAG = MovieDetailActivity.class.getName();
 
     private boolean isFavorite;
@@ -110,13 +110,18 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
     }
 
     @Override
-    public void onClick(TrailerItem trailerItem) {
+    public void onClickTrailer(TrailerItem trailerItem) {
         final Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(MovieSettings.getBaseYoutubeUrl(trailerItem.getKey())));
         final Intent chooser = Intent.createChooser(youtubeIntent, getString(R.string.open_with));
         final PackageManager packageManager = getPackageManager();
         if (chooser.resolveActivity(packageManager) != null) {
             startActivity(chooser);
         }
+    }
+
+    @Override
+    public void onClickReview() {
+        startReviewActivity();
     }
 
     @Override
@@ -135,11 +140,7 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
                 finish();
                 return true;
             case R.id.action_reviews:
-                final Intent reviewIntent = new Intent(this, MovieReviewActivity.class);
-                final Bundle args = new Bundle();
-                args.putParcelable(BaseMovieActivity.EXTRA_MOVIE_ITEM, movieItem);
-                reviewIntent.putExtras(args);
-                startActivity(reviewIntent);
+                startReviewActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -263,5 +264,13 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
                 cursor.close();
             }
         }
+    }
+
+    private void startReviewActivity() {
+        final Intent reviewIntent = new Intent(this, MovieReviewActivity.class);
+        final Bundle args = new Bundle();
+        args.putParcelable(BaseMovieActivity.EXTRA_MOVIE_ITEM, movieItem);
+        reviewIntent.putExtras(args);
+        startActivity(reviewIntent);
     }
 }
