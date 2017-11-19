@@ -55,6 +55,10 @@ public class EmptyScreenView extends LinearLayout {
                 this.setVisibility(VISIBLE);
                 emptyScreenMessage.setText(R.string.error_cannot_load_movies);
                 break;
+            case NO_FAVORITES:
+                this.setVisibility(VISIBLE);
+                emptyScreenMessage.setText(R.string.error_no_favorites);
+                break;
         }
     }
 
@@ -73,5 +77,9 @@ public class EmptyScreenView extends LinearLayout {
          * This type is to show an error about connection, so we couldn't reach the server to get the movies
          */
         ERROR_NO_MOVIES,
+        /**
+         * This type is to show an error about no favorite movies
+         */
+        NO_FAVORITES,
     }
 }

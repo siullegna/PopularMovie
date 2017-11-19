@@ -20,7 +20,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetailActivity" />
-        <activity android:name=".MovieReviewActivity"></activity>
+        <activity android:name=".MovieReviewActivity" />
+
+        <provider
+            android:name=".db.MoviesProvider"
+            android:authorities="@string/content_authority"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

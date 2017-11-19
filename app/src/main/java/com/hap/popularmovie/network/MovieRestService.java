@@ -54,7 +54,8 @@ public class MovieRestService {
 
     public enum SortType {
         POPULAR("popular"),
-        RATING("top_rated");
+        RATING("top_rated"),
+        FAVORITE("favorite");
 
         private final String type;
 

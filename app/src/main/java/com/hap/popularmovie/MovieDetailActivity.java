@@ -1,7 +1,9 @@
 package com.hap.popularmovie;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hap.popularmovie.db.MovieContract;
 import com.hap.popularmovie.detail.adapter.MovieDetailAdapter;
 import com.hap.popularmovie.detail.util.DetailFactory;
 import com.hap.popularmovie.model.movie.MovieItem;
@@ -36,6 +39,7 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
 
     private boolean isFavorite;
     private CardView cardView;
+    private FloatingActionButton fabFavorite;
     private MovieDetailAdapter movieDetailAdapter;
     private MovieItem movieItem;
     private ArrayList<TrailerItem> trailers;
@@ -49,12 +53,13 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
         loader = findViewById(R.id.loader);
         cardView = findViewById(R.id.card_view);
         rvList = findViewById(R.id.movie_details_list);
-        final FloatingActionButton fabFavorite = findViewById(R.id.fab_favorite);
+        fabFavorite = findViewById(R.id.fab_favorite);
         fabFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fabFavorite.setSelected(!fabFavorite.isSelected());
                 isFavorite = fabFavorite.isSelected();
+                updateFavoriteState();
             }
         });
         movieDetailAdapter = new MovieDetailAdapter(this);
@@ -65,7 +70,7 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
         showLoader();
         if (savedInstanceState == null) {
             movieItem = getIntent().getParcelableExtra(BaseMovieActivity.EXTRA_MOVIE_ITEM);
-            loadMovies(String.valueOf(movieItem.getId()));
+            loadMovieDetails(String.valueOf(movieItem.getId()));
             loadTrailers(String.valueOf(movieItem.getId()));
         } else {
             isFavorite = savedInstanceState.getBoolean(BaseMovieActivity.EXTRA_IS_FAVORITE);
@@ -156,7 +161,33 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
         loader.setVisibility(View.GONE);
     }
 
-    private void loadMovies(final String movieId) {
+    private void updateFavoriteState() {
+        if (isFavorite) {
+            final ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.MoviesEntity._ID, movieItem.getId());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_TITLE, movieItem.getTitle());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_ORIGINAL_TITLE, movieItem.getOriginalTitle());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_ORIGINAL_LANGUAGE, movieItem.getOriginalLanguage());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_THUMBNAIL, movieItem.getThumbnail());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_SYNOPSIS, movieItem.getSynopsis());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_GENRES, MovieSettings.getMovieGenres(movieItem.getGenres()));
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_RELEASE_DATE, movieItem.getReleaseDate());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_DURATION, movieItem.getDuration());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_VOTE_AVERAGE, movieItem.getVoteAverage());
+            contentValues.put(MovieContract.MoviesEntity.COLUMN_IS_FAVORITE, isFavorite ? 1 : 0);
+
+            final ContentValues[] contentValuesList = new ContentValues[1];
+            contentValuesList[0] = contentValues;
+
+            getContentResolver().bulkInsert(MovieContract.MoviesEntity.CONTENT_URI, contentValuesList);
+        } else {
+            getContentResolver().delete(MovieContract.MoviesEntity.getContentUriByMovieId(String.valueOf(movieItem.getId())),
+                    null,
+                    null);
+        }
+    }
+
+    private void loadMovieDetails(final String movieId) {
         movieRestService.getMovieById(movieId)
                 .subscribe(new Consumer<MovieItem>() {
                     @Override
@@ -168,6 +199,7 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
                         final ArrayList<Object> movieDetails = DetailFactory.getInformationList(movieItem);
                         movieDetailAdapter.addDetailsAll(movieDetails);
                         cardView.setVisibility(View.VISIBLE);
+                        loadFavorite();
                         hideLoader();
                     }
                 }, new Consumer<Throwable>() {
@@ -179,6 +211,7 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
                         final ArrayList<Object> movieDetails = DetailFactory.getInformationList(movieItem);
                         movieDetailAdapter.addDetailsAll(movieDetails);
                         cardView.setVisibility(View.VISIBLE);
+                        loadFavorite();
                         hideLoader();
                         Toast.makeText(MovieApplication.getInstance(), MovieApplication.getInstance().getString(R.string.error_cannot_load_details), Toast.LENGTH_LONG).show();
                     }
@@ -206,5 +239,29 @@ public class MovieDetailActivity extends BaseMovieActivity implements MovieDetai
                         Toast.makeText(MovieApplication.getInstance(), MovieApplication.getInstance().getString(R.string.trailer_loading_error), Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void loadFavorite() {
+        final Cursor cursor = getContentResolver().query(MovieContract.MoviesEntity.getContentUriByMovieId(String.valueOf(movieItem.getId())),
+                null,
+                null,
+                null,
+                null);
+
+        try {
+            if (cursor == null || cursor.getCount() == 0) {
+                return;
+            }
+
+            final int favoriteColumn = cursor.getColumnIndex(MovieContract.MoviesEntity.COLUMN_IS_FAVORITE);
+
+            cursor.moveToNext();
+            isFavorite = cursor.getInt(favoriteColumn) == 1;
+            fabFavorite.setSelected(isFavorite);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }
