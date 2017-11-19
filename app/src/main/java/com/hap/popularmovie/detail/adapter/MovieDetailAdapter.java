@@ -14,7 +14,9 @@ import com.hap.popularmovie.detail.holder.SeparatorViewHolder;
 import com.hap.popularmovie.detail.holder.TrailerViewHolder;
 import com.hap.popularmovie.model.detail.InformationItem;
 import com.hap.popularmovie.model.detail.SeparatorItem;
+import com.hap.popularmovie.model.review.ReviewItem;
 import com.hap.popularmovie.model.trailer.TrailerItem;
+import com.hap.popularmovie.review.holder.ReviewHolder;
 
 import java.util.ArrayList;
 
@@ -24,10 +26,10 @@ import java.util.ArrayList;
 
 public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ArrayList<Object> items = new ArrayList<>();
-    private final OnTrailerClickListener onTrailerClickListener;
+    private final OnItemClickListener onItemClickListener;
 
-    public MovieDetailAdapter(OnTrailerClickListener onTrailerClickListener) {
-        this.onTrailerClickListener = onTrailerClickListener;
+    public MovieDetailAdapter(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -53,6 +55,10 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case HEADER:
                 view = inflater.inflate(R.layout.section_header_view_holder, parent, false);
                 holder = new SectionHeaderViewHolder(view);
+                break;
+            case REVIEW:
+                view = inflater.inflate(R.layout.review_holder, parent, false);
+                holder = new ReviewHolder(view);
                 break;
             default:
                 view = inflater.inflate(R.layout.empty_view_holder, parent, false);
@@ -81,14 +87,26 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 trailerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (onTrailerClickListener != null) {
-                            onTrailerClickListener.onClick(trailerItem);
+                        if (onItemClickListener != null) {
+                            onItemClickListener.onClickTrailer(trailerItem);
                         }
                     }
                 });
                 break;
             case HEADER:
                 ((SectionHeaderViewHolder) holder).setupHeader((String) object);
+                break;
+            case REVIEW:
+                final ReviewHolder reviewHolder = ((ReviewHolder) holder);
+                reviewHolder.setupReview();
+                reviewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (onItemClickListener != null) {
+                            onItemClickListener.onClickReview();
+                        }
+                    }
+                });
                 break;
             default:
                 break;
@@ -111,6 +129,8 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return DetailType.TRAILER.ordinal();
         } else if (object instanceof String) {
             return DetailType.HEADER.ordinal();
+        } else if (object instanceof ReviewItem) {
+            return DetailType.REVIEW.ordinal();
         }
         return super.getItemViewType(position);
     }
@@ -123,10 +143,12 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void addTrailers(final String header, final ArrayList<TrailerItem> trailers) {
         this.items.add(header);
         this.items.addAll(trailers);
+        this.items.add(new ReviewItem());
         notifyDataSetChanged();
     }
 
-    public interface OnTrailerClickListener {
-        void onClick(TrailerItem trailerItem);
+    public interface OnItemClickListener {
+        void onClickTrailer(TrailerItem trailerItem);
+        void onClickReview();
     }
 }
