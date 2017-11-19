@@ -7,50 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.hap.popularmovie.MovieDetailActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="@dimen/movie_detail_expanded_title_margin_end"
-            app:expandedTitleMarginStart="@dimen/movie_detail_expanded_title_margin_start"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/movie_detail_thumbnail_height">
-
-                <ImageView
-                    android:id="@+id/iv_movie_thumbnail"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_thumbnail_height"
-                    android:scaleType="centerCrop" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/movie_detail_title_gradient" />
-            </RelativeLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/collapsing_toolbar" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_favorite"
@@ -62,42 +19,29 @@
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scroll"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/movie_detail_nested_scroll_padding_bottom"
-        android:paddingEnd="@dimen/movie_detail_nested_scroll_padding"
-        android:paddingLeft="@dimen/movie_detail_nested_scroll_padding"
-        android:paddingRight="@dimen/movie_detail_nested_scroll_padding"
-        android:paddingStart="@dimen/movie_detail_nested_scroll_padding"
-        android:paddingTop="@dimen/movie_detail_nested_scroll_padding_top"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_details_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.CardView>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.hap.popularmovie.detail.widget.MovieDetailsView
-                    android:id="@+id/movie_details_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
-
-                <ProgressBar
-                    android:id="@+id/loader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    </android.support.v4.widget.NestedScrollView>
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </android.support.design.widget.CoordinatorLayout>

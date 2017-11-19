@@ -1,8 +1,10 @@
 package com.hap.popularmovie.network;
 
 import com.hap.popularmovie.dagger.scope.ApplicationScope;
-import com.hap.popularmovie.model.MovieItem;
-import com.hap.popularmovie.model.MovieResponse;
+import com.hap.popularmovie.model.movie.MovieItem;
+import com.hap.popularmovie.model.movie.MovieResponse;
+import com.hap.popularmovie.model.review.ReviewResponse;
+import com.hap.popularmovie.model.trailer.TrailerResponse;
 import com.hap.popularmovie.util.MovieSettings;
 
 import io.reactivex.Observable;
@@ -36,9 +38,24 @@ public class MovieRestService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<TrailerResponse> getMovieTrailerById(final String movieId) {
+        final Observable<TrailerResponse> trailerObservable = this.movieRestApi.getMovieTrailerById(movieId, apiKey);
+        return trailerObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ReviewResponse> getMovieReviewById(final String movieId) {
+        final Observable<ReviewResponse> reviewObservable = this.movieRestApi.getMovieReviewById(movieId, apiKey);
+        return reviewObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public enum SortType {
         POPULAR("popular"),
-        RATING("top_rated");
+        RATING("top_rated"),
+        FAVORITE("favorite");
 
         private final String type;
 

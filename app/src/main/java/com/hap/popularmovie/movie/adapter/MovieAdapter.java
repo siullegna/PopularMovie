@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hap.popularmovie.R;
-import com.hap.popularmovie.model.MovieItem;
+import com.hap.popularmovie.model.movie.MovieItem;
 import com.hap.popularmovie.movie.holder.MovieItemHolder;
 
 import java.util.ArrayList;
@@ -23,6 +23,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieItemHolder> {
     public MovieAdapter(final int itemSize, final MovieItemHolder.OnViewClickListener onViewClickListener) {
         this.itemSize = itemSize;
         this.onViewClickListener = onViewClickListener;
+    }
+
+    public boolean isEmpty() {
+        return movies.isEmpty();
     }
 
     @Override
@@ -46,9 +50,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieItemHolder> {
         return super.getItemViewType(position);
     }
 
-    public void addAll(final ArrayList<MovieItem> movies) {
+    public void addAll(final ArrayList<MovieItem> movies, final boolean shouldClear) {
+        if (shouldClear) {
+            this.movies.clear();
+        }
         this.movies.addAll(movies);
         notifyDataSetChanged();
+    }
+
+    public void addAll(final ArrayList<MovieItem> movies) {
+        addAll(movies, false);
     }
 
     public void clear() {
