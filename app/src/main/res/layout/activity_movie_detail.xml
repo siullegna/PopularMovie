@@ -7,50 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.hap.popularmovie.MovieDetailActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="@dimen/movie_detail_expanded_title_margin_end"
-            app:expandedTitleMarginStart="@dimen/movie_detail_expanded_title_margin_start"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/movie_detail_thumbnail_height">
-
-                <ImageView
-                    android:id="@+id/iv_movie_thumbnail"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_thumbnail_height"
-                    android:scaleType="centerCrop" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/movie_detail_title_gradient" />
-            </RelativeLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/collapsing_toolbar" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_favorite"

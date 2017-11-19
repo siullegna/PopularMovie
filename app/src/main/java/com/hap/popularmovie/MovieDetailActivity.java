@@ -7,16 +7,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hap.popularmovie.detail.adapter.MovieDetailAdapter;
@@ -24,30 +22,20 @@ import com.hap.popularmovie.detail.util.DetailFactory;
 import com.hap.popularmovie.model.movie.MovieItem;
 import com.hap.popularmovie.model.trailer.TrailerItem;
 import com.hap.popularmovie.model.trailer.TrailerResponse;
-import com.hap.popularmovie.network.MovieRestService;
 import com.hap.popularmovie.util.ImageSettings;
 import com.hap.popularmovie.util.MovieSettings;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
-public class MovieDetailActivity extends AppCompatActivity implements MovieDetailAdapter.OnTrailerClickListener {
+public class MovieDetailActivity extends BaseMovieActivity implements MovieDetailAdapter.OnTrailerClickListener {
     private static final String TAG = MovieDetailActivity.class.getName();
-    public static final String EXTRA_MOVIE_ITEM = "com.hap.popularmovie.EXTRA_MOVIE_ITEM";
-    public static final String EXTRA_IS_FAVORITE = "com.hap.popularmovie.EXTRA_IS_FAVORITE";
-    public static final String EXTRA_TRAILERS = "com.hap.popularmovie.EXTRA_TRAILERS";
 
     private boolean isFavorite;
-    @Inject
-    MovieRestService movieRestService;
-    private ProgressBar loader;
     private CardView cardView;
-    private RecyclerView movieDetailsList;
     private MovieDetailAdapter movieDetailAdapter;
     private MovieItem movieItem;
     private ArrayList<TrailerItem> trailers;
@@ -57,12 +45,10 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        MovieApplication.getInstance().getMovieAppComponent().inject(this);
-
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         loader = findViewById(R.id.loader);
         cardView = findViewById(R.id.card_view);
-        movieDetailsList = findViewById(R.id.movie_details_list);
+        rvList = findViewById(R.id.movie_details_list);
         final FloatingActionButton fabFavorite = findViewById(R.id.fab_favorite);
         fabFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,20 +58,23 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
             }
         });
         movieDetailAdapter = new MovieDetailAdapter(this);
-        setupList();
+        rvList.setHasFixedSize(true);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvList.setLayoutManager(layoutManager);
+        rvList.setAdapter(movieDetailAdapter);
         showLoader();
         if (savedInstanceState == null) {
-            movieItem = getIntent().getParcelableExtra(MovieDetailActivity.EXTRA_MOVIE_ITEM);
+            movieItem = getIntent().getParcelableExtra(BaseMovieActivity.EXTRA_MOVIE_ITEM);
             loadMovies(String.valueOf(movieItem.getId()));
             loadTrailers(String.valueOf(movieItem.getId()));
         } else {
-            isFavorite = savedInstanceState.getBoolean(MovieDetailActivity.EXTRA_IS_FAVORITE);
+            isFavorite = savedInstanceState.getBoolean(BaseMovieActivity.EXTRA_IS_FAVORITE);
             fabFavorite.setSelected(isFavorite);
-            movieItem = savedInstanceState.getParcelable(MovieDetailActivity.EXTRA_MOVIE_ITEM);
+            movieItem = savedInstanceState.getParcelable(BaseMovieActivity.EXTRA_MOVIE_ITEM);
             final ArrayList<Object> movieDetails = DetailFactory.getInformationList(movieItem);
             movieDetailAdapter.addDetailsAll(movieDetails);
             cardView.setVisibility(View.VISIBLE);
-            trailers = savedInstanceState.getParcelableArrayList(MovieDetailActivity.EXTRA_TRAILERS);
+            trailers = savedInstanceState.getParcelableArrayList(BaseMovieActivity.EXTRA_TRAILERS);
             if (trailers == null) {
                 loadTrailers(String.valueOf(movieItem.getId()));
             } else {
@@ -109,20 +98,27 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(MovieDetailActivity.EXTRA_MOVIE_ITEM, movieItem);
-        outState.putBoolean(MovieDetailActivity.EXTRA_IS_FAVORITE, isFavorite);
-        outState.putParcelableArrayList(MovieDetailActivity.EXTRA_TRAILERS, trailers);
+        outState.putParcelable(BaseMovieActivity.EXTRA_MOVIE_ITEM, movieItem);
+        outState.putBoolean(BaseMovieActivity.EXTRA_IS_FAVORITE, isFavorite);
+        outState.putParcelableArrayList(BaseMovieActivity.EXTRA_TRAILERS, trailers);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onClick(TrailerItem trailerItem) {
         final Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(MovieSettings.getBaseYoutubeUrl(trailerItem.getKey())));
-        final Intent chooser = Intent.createChooser(youtubeIntent , getString(R.string.open_with));
+        final Intent chooser = Intent.createChooser(youtubeIntent, getString(R.string.open_with));
         final PackageManager packageManager = getPackageManager();
         if (chooser.resolveActivity(packageManager) != null) {
             startActivity(chooser);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.detail_menu, menu);
+        return true;
     }
 
     @Override
@@ -133,26 +129,27 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
             case android.R.id.home:
                 finish();
                 return true;
-
+            case R.id.action_reviews:
+                final Intent reviewIntent = new Intent(this, MovieReviewActivity.class);
+                final Bundle args = new Bundle();
+                args.putParcelable(BaseMovieActivity.EXTRA_MOVIE_ITEM, movieItem);
+                reviewIntent.putExtras(args);
+                startActivity(reviewIntent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupList() {
-        movieDetailsList.setHasFixedSize(true);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        movieDetailsList.setLayoutManager(layoutManager);
-        movieDetailsList.setAdapter(movieDetailAdapter);
-    }
-
-    private void showLoader() {
+    @Override
+    protected void showLoader() {
         if (loader == null) {
             return;
         }
         loader.setVisibility(View.VISIBLE);
     }
 
-    private void hideLoader() {
+    @Override
+    protected void hideLoader() {
         if (loader == null) {
             return;
         }

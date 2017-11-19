@@ -5,15 +5,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hap.popularmovie.model.movie.MovieItem;
@@ -26,53 +22,43 @@ import com.hap.popularmovie.widget.EmptyScreenView;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 
-public class MovieActivity extends AppCompatActivity implements MovieItemHolder.OnViewClickListener {
-    private static final String EXTRA_MOVIES_KEY = "com.hap.popularmovie.EXTRA_MOVIES_KEY";
-    private static final String EXTRA_SORT_TYPE_KEY = "com.hap.popularmovie.EXTRA_SORT_TYPE_KEY";
+public class MovieActivity extends BaseMovieActivity implements MovieItemHolder.OnViewClickListener {
     private MovieRestService.SortType currentSortType = null;
     private ArrayList<MovieItem> movies;
     private MovieAdapter movieAdapter;
-    private ProgressBar loader;
     private SwipeRefreshLayout refresh;
-    private RecyclerView rvMovies;
     private EmptyScreenView emptyScreenView;
-    @Inject
-    MovieRestService movieRestService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
-        MovieApplication.getInstance().getMovieAppComponent().inject(this);
-
         if (savedInstanceState != null) {
-            movies = savedInstanceState.getParcelableArrayList(MovieActivity.EXTRA_MOVIES_KEY);
-            currentSortType = MovieRestService.SortType.valueOf(savedInstanceState.getString(MovieActivity.EXTRA_SORT_TYPE_KEY));
+            movies = savedInstanceState.getParcelableArrayList(BaseMovieActivity.EXTRA_MOVIES_KEY);
+            currentSortType = MovieRestService.SortType.valueOf(savedInstanceState.getString(BaseMovieActivity.EXTRA_SORT_TYPE_KEY));
         }
 
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         loader = findViewById(R.id.loader);
         refresh = findViewById(R.id.refresh);
-        rvMovies = findViewById(R.id.rv_movies);
+        rvList = findViewById(R.id.rv_movies);
         emptyScreenView = findViewById(R.id.empty_screen_view);
 
-        rvMovies.setHasFixedSize(true);
+        rvList.setHasFixedSize(true);
         final int cols = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
                 ? 2
                 : 3;
         final GridLayoutManager layoutManager = new GridLayoutManager(this, cols, LinearLayoutManager.VERTICAL, false);
-        rvMovies.setLayoutManager(layoutManager);
+        rvList.setLayoutManager(layoutManager);
 
         final int itemSize = ImageSettings.getItemSize(this, cols);
         movieAdapter = new MovieAdapter(itemSize, this);
-        rvMovies.setAdapter(movieAdapter);
+        rvList.setAdapter(movieAdapter);
 
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -96,7 +82,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
             hideLoader();
             if (movieAdapter.getItemCount() > 0) {
                 emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.GONE);
-                rvMovies.setVisibility(View.VISIBLE);
+                rvList.setVisibility(View.VISIBLE);
             } else {
                 emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.EMPTY_MOVIES);
             }
@@ -119,7 +105,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                 if (currentSortType == MovieRestService.SortType.POPULAR && movieAdapter.getItemCount() > 0) {
                     return false;
                 }
-                rvMovies.setVisibility(View.GONE);
+                rvList.setVisibility(View.GONE);
                 showLoader();
                 movies.clear();
                 movieAdapter.clear();
@@ -130,7 +116,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                 if (currentSortType == MovieRestService.SortType.RATING && movieAdapter.getItemCount() > 0) {
                     return false;
                 }
-                rvMovies.setVisibility(View.GONE);
+                rvList.setVisibility(View.GONE);
                 showLoader();
                 movies.clear();
                 movieAdapter.clear();
@@ -147,8 +133,8 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(MovieActivity.EXTRA_MOVIES_KEY, movies);
-        outState.putString(MovieActivity.EXTRA_SORT_TYPE_KEY, currentSortType.name());
+        outState.putParcelableArrayList(BaseMovieActivity.EXTRA_MOVIES_KEY, movies);
+        outState.putString(BaseMovieActivity.EXTRA_SORT_TYPE_KEY, currentSortType.name());
         super.onSaveInstanceState(outState);
     }
 
@@ -161,7 +147,8 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
         startActivity(detailsIntent);
     }
 
-    private void showLoader() {
+    @Override
+    protected void showLoader() {
         if (loader == null || emptyScreenView == null) {
             return;
         }
@@ -169,7 +156,8 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
         emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.GONE);
     }
 
-    private void hideLoader() {
+    @Override
+    protected void hideLoader() {
         if (loader == null || refresh == null) {
             return;
         }
@@ -184,7 +172,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(@NonNull MovieResponse movieResponse) throws Exception {
-                        if (movieAdapter == null || rvMovies == null || emptyScreenView == null) {
+                        if (movieAdapter == null || rvList == null || emptyScreenView == null) {
                             return;
                         }
 
@@ -193,7 +181,7 @@ public class MovieActivity extends AppCompatActivity implements MovieItemHolder.
                         hideLoader();
                         if (movieAdapter.getItemCount() > 0) {
                             emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.GONE);
-                            rvMovies.setVisibility(View.VISIBLE);
+                            rvList.setVisibility(View.VISIBLE);
                         } else {
                             emptyScreenView.setupEmptyScreen(EmptyScreenView.ScreenType.EMPTY_MOVIES);
                         }
